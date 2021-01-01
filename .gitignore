@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 crossword-venv/
+user_input.py
