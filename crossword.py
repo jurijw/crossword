@@ -47,12 +47,12 @@ def word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
     if left_to_right:
         chars = grid[y][x:x+len(word)]
     else:
-        chars = grid[y:y+len(word)][x]
-
+        chars = grid[:, x][y:y+len(word)]
+    print(chars)
     # Compare all the words chars to the chars already on the grid. Only allow inserts
     # if the corresponding spot on the grid is free or if the chars match
     for word_char, grid_char in zip(word, chars):
-        if word_char != grid_char and grid_char:
+        if word_char != grid_char and grid_char != '':
             return False
     return True
 
@@ -62,4 +62,10 @@ def place_word_at_pos(grid, word, insert_start_pos, left_to_right):
     if not word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
         return False
     else:
-        pass
+        x, y = insert_start_pos
+        if left_to_right:
+            for i, char in enumerate(word):
+                grid[y][x + i] = char
+        else:
+            for j, char in enumerate(word):
+                grid[y + j][x] = char
