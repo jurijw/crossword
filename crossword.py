@@ -26,9 +26,9 @@ def get_insert_spots(grid, word, insert_start_pos, left_to_right):
 def word_goes_off_grid(grid, word, insert_start_pos, left_to_right):
     x, y = insert_start_pos
     if left_to_right:
-        return x + len(word) > grid.shape[0]
+        return x + len(word) > grid.shape[1]
     else:
-        return y + len(word) > grid.shape[1]
+        return y + len(word) > grid.shape[4]
 
 
 def word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
@@ -62,10 +62,30 @@ def place_word_at_pos(grid, word, insert_start_pos, left_to_right):
     if not word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
         return False
     else:
+        # Place the word at the correct place character by character
         x, y = insert_start_pos
         if left_to_right:
             for i, char in enumerate(word):
                 grid[y][x + i] = char
+                # Record that the word has been placed
+                across_placed.append(insert_start_pos)
         else:
             for j, char in enumerate(word):
                 grid[y + j][x] = char
+                down_placed.append(insert_start_pos)
+
+
+def extend_grid(grid, horizontal):
+    if horizontal:
+        grid = np.hstack(grid, np.zeros((grid.shape[0], 1), dtype=str))
+    else:
+        grid = np.vstack(grid, np.zeros((1, grid.shape[1]), dtype=str)
+
+
+def main():
+    while len(answers) > 0:
+        # Get a random word
+        pass
+
+if __name__ == 'main':
+    main()
