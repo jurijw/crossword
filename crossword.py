@@ -1,7 +1,17 @@
 import numpy as np
 from user_input import hints_and_answers
 
-answers = list(hints_and_answers.values())
+# DEBUG ONLY
+np.random.seed(0)
+
+
+def clean_answers(answer):
+    """Function that sanitizes answer input so that it can be displayed in
+    a crossword-grid. Removes spaces and makes all characters upper-case."""
+    return answer.replace(" ", "").upper()
+
+
+answers = list(map(clean_answers, hints_and_answers.values()))
 sorted_answers = list(reversed(sorted(answers, key=len)))
 longest_length = len(sorted_answers[0])
 
@@ -18,9 +28,9 @@ down_placed = []
 def get_insert_spots(grid, word, insert_start_pos, left_to_right):
     x, y = insert_start_pos
     if left_to_right:
-        return grid[y][x:x+len(word)]
+        return grid[y][x: x + len(word)]
     else:
-        return grid[:, x][y:y+len(word)]
+        return grid[:, x][y: y + len(word)]
 
 
 def word_goes_off_grid(grid, word, insert_start_pos, left_to_right):
@@ -46,13 +56,13 @@ def word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
     x, y = insert_start_pos
     # Get a the set of chars where the word would go
     if left_to_right:
-        chars = grid[y][x:x+len(word)]
+        chars = grid[y][x: x + len(word)]
     else:
-        chars = grid[:, x][y:y+len(word)]
+        chars = grid[:, x][y: y + len(word)]
     # Compare all the words chars to the chars already on the grid. Only allow inserts
     # if the corresponding spot on the grid is free or if the chars match
     for word_char, grid_char in zip(word, chars):
-        if word_char != grid_char and grid_char != '':
+        if word_char != grid_char and grid_char != "":
             return False
     return True
 
@@ -86,17 +96,25 @@ def get_valid_word_placements(grid, word):
     return
 
 
-def main():
+def get_intersection_placements(grid, word):
+    for char in word:
+        intersections = zip(np.where(grid == char)[0], np.where(grid == char)[1])
+
+
+def generate(grid, answers):
+    np.random.shuffle(answers)
     while len(answers) > 0:
         # Get a random word
-        rand_idx = np.random.randint(0, len(answers))
-        word = answers.pop(rand_idx)
-        # Place the word randomly
-        print(word)
-
-        # TODO: remove
-        break
+        for word in answers:
+            chars = list(word)
+            np.random.shuffle(chars)
+            # Place the word randomly at an intersection
+            for char in chars:
 
 
-if __name__ == '__main__':
+def main():
+    pass
+
+
+if __name__ == "__main__":
     main()
