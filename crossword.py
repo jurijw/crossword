@@ -31,6 +31,7 @@ def word_goes_off_grid(grid, word, insert_start_pos, left_to_right):
         return y + len(word) > grid.shape[4]
 
 
+@np.vectorize
 def word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
     # Ensure that no other word has been placed at INSERT_START_POS with the same
     # orientation. (e.g no two words go accross at (2,3))
@@ -48,7 +49,6 @@ def word_can_be_placed_at_pos(grid, word, insert_start_pos, left_to_right):
         chars = grid[y][x:x+len(word)]
     else:
         chars = grid[:, x][y:y+len(word)]
-    print(chars)
     # Compare all the words chars to the chars already on the grid. Only allow inserts
     # if the corresponding spot on the grid is free or if the chars match
     for word_char, grid_char in zip(word, chars):
@@ -79,13 +79,24 @@ def extend_grid(grid, horizontal):
     if horizontal:
         grid = np.hstack(grid, np.zeros((grid.shape[0], 1), dtype=str))
     else:
-        grid = np.vstack(grid, np.zeros((1, grid.shape[1]), dtype=str)
+        grid = np.vstack(grid, np.zeros((1, grid.shape[1]), dtype=str))
+
+
+def get_valid_word_placements(grid, word):
+    return
 
 
 def main():
     while len(answers) > 0:
         # Get a random word
-        pass
+        rand_idx = np.random.randint(0, len(answers))
+        word = answers.pop(rand_idx)
+        # Place the word randomly
+        print(word)
 
-if __name__ == 'main':
+        # TODO: remove
+        break
+
+
+if __name__ == '__main__':
     main()
