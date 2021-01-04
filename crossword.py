@@ -65,23 +65,22 @@ def place_word_at_pos(grid, word, insert_start_pos,
         # Place the word at the correct place character by character
         x, y = insert_start_pos
         if left_to_right:
-            for i, char in enumerate(word):
-                grid[y][x + i] = char
-                # Record that the word has been placed
-                across_placed.append(insert_start_pos)
+            for j, char in enumerate(word):
+                grid[y][x + j] = char
+            # Record that the word has been placed
+            across_placed.append(insert_start_pos)
             return True
         else:
-            for j, char in enumerate(word):
-                grid[y + j][x] = char
-                down_placed.append(insert_start_pos)
-            True
+            for i, char in enumerate(word):
+                grid[y + i][x] = char
+            down_placed.append(insert_start_pos)
+            return True
 
 
 def get_grid_copy_with_word_at_pos(
         grid, word, insert_start_pos, left_to_right, across_placed, down_placed):
     # Create a grid copy
     grid_copy = np.copy(grid)
-    print_grid(grid_copy)
     # Place the word if possible and return the copy. If no placement is
     # possible return False
     if place_word_at_pos(grid_copy, word, insert_start_pos,
@@ -122,9 +121,8 @@ def generate(grid, answers, across_placed=[], down_placed=[]):
         # np.random.shuffle(chars) TODO: ensure some randomness in choosingn the
         # intersection
         for i, char in enumerate(word):
-            print(word)
             occurences = np.where(grid == char)
-            intersections = zip(occurences[0], occurences[1])
+            intersections = zip(occurences[1], occurences[0])
             for intersection in intersections:
                 # Randomly choose to place the word either across or down
                 left_to_right_choice = [True, False]
@@ -133,16 +131,16 @@ def generate(grid, answers, across_placed=[], down_placed=[]):
                 for left_to_right in left_to_right_choice:
                     # Calculate the start positions for word placements
                     x, y = intersection
-                    insert_start_pos = (x - i, y) if left_to_right else (x, y + i)
+                    insert_start_pos = (x - i, y) if left_to_right else (x, y - i)
+
+                    # print(
+                    #     f"word: {word}   intersection: {intersection}, left_to_right: {left_to_right}, insert_start_pos: {insert_start_pos}")
+                    # pause = input("Press any key to continue: ")
 
                     new_grid = get_grid_copy_with_word_at_pos(
                         grid, word, insert_start_pos, left_to_right, across_placed, down_placed)
 
-                    print(
-                        f"word: {word}   intersection: {intersection}, left_to_right: {left_to_right}")
-                    pause = input("Press any key to continue: ")
                     if new_grid != False:
-                        print(insert_start_pos)
                         # If the word was able to be placed recursively call the
                         # generate function with the new grid (with the word placed)
                         # and a new answer list (with the word removed)
@@ -169,7 +167,7 @@ def print_grid(grid):
         print(str(j).center(initial_column_spacing, ' '), end=' - ')
         for spot in row:
             if spot == '':
-                print('x'.center(standard_column_spacing, ' '), end='')
+                print('.'.center(standard_column_spacing, ' '), end='')
             else:
                 print(spot.center(standard_column_spacing, ' '), end='')
         print()
@@ -196,6 +194,7 @@ def main():
         down_placed=down_placed)
 
     generate(grid, sorted_answers, across_placed, down_placed)
+    print(grid)
 
 
 if __name__ == "__main__":
